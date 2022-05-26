@@ -12,7 +12,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-origins = ["https://www.google.com"]
+#start of middleware which allows you to determine what domains you can be reached from in origins
+origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
@@ -21,9 +22,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+# end of middleware
 
-
-
+#routers for sending main api requests to other files 
 app.include_router(post.router)
 app.include_router(user.router)
 app.include_router(auth.router)

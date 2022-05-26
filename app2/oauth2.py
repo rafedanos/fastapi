@@ -4,8 +4,8 @@ from datetime import datetime, timedelta
 from . import schemas, database, models
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
-import boto3
-import json
+from .config import settings
+
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='login')
 # SECRET_KEY
@@ -14,19 +14,11 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl='login')
 
 
 #for geting url from aws secretsmanager
-client = boto3.client('secretsmanager')
-
-responce = client.get_secret_value(
-    SecretId='fastapi_secret3',
-)
-#converts secret id to dict called secretdict
-secretDict = json.loads(responce['SecretString'])
 
 
-
-SECRET_KEY = secretDict['secret']
-ALGORITHM = secretDict['alg']
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+SECRET_KEY = settings.secret_key
+ALGORITHM = settings.algorithm
+ACCESS_TOKEN_EXPIRE_MINUTES = settings.access_token_expire_minutes
 
 def create_access_token(data: dict):
     to_encode = data.copy()

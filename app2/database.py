@@ -2,20 +2,10 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-import boto3
-import json
+from.config import settings
 
-#for geting url from aws secretsmanager
-client = boto3.client('secretsmanager')
 
-responce = client.get_secret_value(
-    SecretId='aws_database_connection',
-)
-#converts secret id to dict called secretdict
-secretDict = json.loads(responce['SecretString'])
-
-#database connection on aws
-SQLALCHEMY_DATABASE_URL = secretDict['URL']                                                 
+SQLALCHEMY_DATABASE_URL =  f'postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}'                                                
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 

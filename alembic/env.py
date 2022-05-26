@@ -5,23 +5,14 @@ from sqlalchemy import pool
 
 from alembic import context
 from app2.models import Base
-import boto3
-import json
+from app2.config import settings
+
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
-
-client = boto3.client('secretsmanager')
-
-responce = client.get_secret_value(
-    SecretId='aws_database_connection',
-)
-#converts secret id to dict called secretdict
-secretDict = json.loads(responce['SecretString'])
-
 config.set_main_option(
-    "sqlalchemy.url", secretDict['URL']
-)
+    "sqlalchemy.url", f'postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}')
+
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
 if config.config_file_name is not None:
